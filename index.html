@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=yes, minimal-ui">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Balls</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div id="overlay">
+        <div id="images">
+
+        </div>
+
+        <div id="info">
+            <img src="icons/Info.png" id="infoIcon" class="icon" onclick="info()"/>        
+            <font id="infoTxt">
+                Leftclick and drag to spawn balls<br>
+                Rightclick and drag to draw walls<br>
+                G to toggle Gravity: <b><a id="gravity">Off</a></b><br>
+                F to toggle Friction: <b><a id="friction">On</a></b><br>
+                C to toggle Collision: <b><a id="collision">On</a></b><br>
+                T to toggle Trail: <b><a id="trail">Off</a></b><br>
+                P to Pause: <b><a id="pause">Not Paused</a></b><br>
+                R to Reset<br>
+                N to spawn a New random ball<br>
+                H to Hide the overlay<br>
+            </font>
+        </div>
+
+        <div id="settings">
+            <img src="icons/Settings.png" id="settingsIcon" class="icon" onclick="settings()"/>        
+            <font id="settingsTxt">
+                Gravity: <input type="number" id="gravityInput" class="input" value="5" onblur="input()"><br>
+                Air Friction: <input type="number" id="airFrictionInput" class="input" value="5" onblur="input()"><br>
+                Bounce Friction: <input type="number" id="bounceFrictionInput" class="input" value="10" onblur="input()"><br>
+                Speed: <input type="number" id="speedInput" class="input" value="100" onblur="input()"><br>
+            </font>
+        </div>
+
+        <input type="file" accept="image/*" onchange="previewFile()" id="upload">
+    </div>
+
+    <canvas id="canvas"></canvas>
+</body>
+    <script src="js/nav.js"></script>
+    <script src="js/script.js"></script>
+</html>
