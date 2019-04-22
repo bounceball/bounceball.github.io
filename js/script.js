@@ -27,7 +27,7 @@ var currentFrame = 0;
 function draw() {
     if(trail == false || trailLength){ctx.clearRect(0, 0, canvas.width, canvas.height);}
 
-    frameHistory[currentFrame] = JSON.parse(JSON.stringify(balls));
+    frameHistory[currentFrame] = {balls: JSON.parse(JSON.stringify(balls)), walls: JSON.parse(JSON.stringify(walls))};
     currentFrame++;
 
     if(gravity){applyGravity();}
@@ -192,24 +192,24 @@ function drawobjects() {
 
     if(trailLength && trail){
         for(var frame = currentFrame-trailLength; frame<currentFrame; frame++){
-            for(var ball in frameHistory[frame]){
-                if(frameHistory[frame][ball].color.indexOf("rgb") == 0){
+            for(var ball in frameHistory[frame].balls){
+                if(frameHistory[frame].balls[ball].color.indexOf("rgb") == 0){
                     ctx.beginPath();
-                    ctx.arc(frameHistory[frame][ball].x, frameHistory[frame][ball].y, frameHistory[frame][ball].radius, 0, 2*Math.PI);
+                    ctx.arc(frameHistory[frame].balls[ball].x, frameHistory[frame].balls[ball].y, frameHistory[frame].balls[ball].radius, 0, 2*Math.PI);
                     ctx.closePath();
-                    ctx.fillStyle = frameHistory[frame][ball].color.slice(0, -1) + ", " + (frame-currentFrame+trailLength)/(trailLength*2) + ")";
+                    ctx.fillStyle = frameHistory[frame].balls[ball].color.slice(0, -1) + ", " + (frame-currentFrame+trailLength)/(trailLength*2) + ")";
                     ctx.fill();
                     ctx.lineWidth = 1;
-                    ctx.strokeStyle = frameHistory[frame][ball].color.slice(0, -1) + ", " + (frame-currentFrame+trailLength)/(trailLength) + ")";
+                    ctx.strokeStyle = frameHistory[frame].balls[ball].color.slice(0, -1) + ", " + (frame-currentFrame+trailLength)/(trailLength) + ")";
                     ctx.stroke();
                 }
                 else{
                     ctx.beginPath();
-                    ctx.arc(frameHistory[frame][ball].x, frameHistory[frame][ball].y, frameHistory[frame][ball].radius, 0, 2*Math.PI);
+                    ctx.arc(frameHistory[frame].balls[ball].x, frameHistory[frame].balls[ball].y, frameHistory[frame].balls[ball].radius, 0, 2*Math.PI);
                     ctx.closePath();
                     ctx.save();
                     ctx.clip();
-                    ctx.drawImage(document.getElementById(frameHistory[frame][ball].color), frameHistory[frame][ball].x - frameHistory[frame][ball].radius, frameHistory[frame][ball].y - frameHistory[frame][ball].radius,frameHistory[frame][ball].radius*2,frameHistory[frame][ball].radius*2);
+                    ctx.drawImage(document.getElementById(frameHistory[frame].balls[ball].color), frameHistory[frame].balls[ball].x - frameHistory[frame].balls[ball].radius, frameHistory[frame].balls[ball].y - frameHistory[frame].balls[ball].radius,frameHistory[frame].balls[ball].radius*2,frameHistory[frame].balls[ball].radius*2);
                     ctx.restore();
                 }
             }

@@ -143,7 +143,8 @@ function checkKeyDown(e) {
     
     if (e.keyCode == '37'){ //left arrow
         if(paused){
-            balls = JSON.parse(JSON.stringify(frameHistory[currentFrame-1]));
+            balls = JSON.parse(JSON.stringify(frameHistory[currentFrame-1].balls));
+            walls = JSON.parse(JSON.stringify(frameHistory[currentFrame-1].walls));
             currentFrame--;
             if(trail == false || trailLength){ctx.clearRect(0, 0, canvas.width, canvas.height);}
             drawobjects();
@@ -155,7 +156,8 @@ function checkKeyDown(e) {
                 requestAnimationFrame(draw);
             }
             else{
-                balls = JSON.parse(JSON.stringify(frameHistory[currentFrame+1]));
+                balls = JSON.parse(JSON.stringify(frameHistory[currentFrame+1].balls));
+                walls = JSON.parse(JSON.stringify(frameHistory[currentFrame+1].walls));
                 currentFrame++;
                 if(trail == false || trailLength){ctx.clearRect(0, 0, canvas.width, canvas.height);}
                 drawobjects();
