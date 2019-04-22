@@ -25,3 +25,24 @@ function reset(){
 	document.getElementById("trailLength").value = ""; change("trailLength");
 	document.getElementById("speed").value = 100; change("speed");
 }
+
+function toggle(variable){
+    window[variable] = !window[variable];
+    document.getElementById(variable + "CB").checked = window[variable];
+
+    if(variable == "paused"){
+        if(!paused){requestAnimationFrame(draw);}
+    }
+}
+
+var basegravityScale = 0.5;
+var basefrictionScale = 0.005;
+var basespeed = 1;
+
+function change(variable){
+    window[variable] = window["base" + variable] * Number(document.getElementById(variable).value)/100;
+
+    if(variable == "trailLength"){
+        window[variable] = Number(document.getElementById(variable).value);
+    }
+}

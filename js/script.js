@@ -25,8 +25,6 @@ var frameHistory = [];
 var currentFrame = 0;
 
 function draw() {
-    if(trail == false || trailLength){ctx.clearRect(0, 0, canvas.width, canvas.height);}
-
     frameHistory[currentFrame] = {balls: JSON.parse(JSON.stringify(balls)), walls: JSON.parse(JSON.stringify(walls))};
     currentFrame++;
 
@@ -68,24 +66,28 @@ function applyCollision() {
                 if(ball1 < ball2){
                     if(Math.hypot(balls[ball2].x - balls[ball1].x, balls[ball2].y - balls[ball1].y) <= balls[ball1].radius + balls[ball2].radius){
                         if(Math.hypot((balls[ball2].x - balls[ball2].dx) - (balls[ball1].x - balls[ball1].dx), (balls[ball2].y - balls[ball2].dy) - (balls[ball1].y - balls[ball1].dy)) > balls[ball1].radius + balls[ball2].radius){
-                            while(Math.hypot(balls[ball2].x - balls[ball1].x, balls[ball2].y - balls[ball1].y) <= balls[ball1].radius + balls[ball2].radius){
-                                balls[ball1].x -= balls[ball1].dx/8;
-                                balls[ball1].y -= balls[ball1].dy/8;
-                                balls[ball2].x -= balls[ball2].dx/8;
-                                balls[ball2].y -= balls[ball2].dy/8;
+                            for(var t = 0; t<1; t+=0.1){
+                                if(Math.hypot((balls[ball2].x - t*balls[ball2].dx) - (balls[ball1].x - t*balls[ball1].dx), (balls[ball2].y - t*balls[ball2].dy) - (balls[ball1].y - t*balls[ball1].dy))>balls[ball1].radius + balls[ball2].radius){
+                                    balls[ball1].x -= balls[ball1].dx*t;
+                                    balls[ball1].y -= balls[ball1].dy*t;
+                                    balls[ball2].x -= balls[ball2].dx*t;
+                                    balls[ball2].y -= balls[ball2].dy*t;
+                                    t=1;
+                                }
                             }
                         }
                         else{
                             var overlap = balls[ball1].radius + balls[ball2].radius - Math.hypot(balls[ball1].x - balls[ball2].x,balls[ball1].y - balls[ball2].y);
-                            balls[ball1].x -= overlap * Math.cos(Math.atan2(balls[ball2].y - balls[ball1].y, balls[ball2].x - balls[ball1].x))/((balls[ball1].mass/balls[ball2].mass) + 1);
-                            balls[ball1].y -= overlap * Math.sin(Math.atan2(balls[ball2].y - balls[ball1].y, balls[ball2].x - balls[ball1].x))/((balls[ball1].mass/balls[ball2].mass) + 1);
-                            balls[ball2].x += overlap * Math.cos(Math.atan2(balls[ball2].y - balls[ball1].y, balls[ball2].x - balls[ball1].x))/((balls[ball2].mass/balls[ball1].mass) + 1);
-                            balls[ball2].y += overlap * Math.sin(Math.atan2(balls[ball2].y - balls[ball1].y, balls[ball2].x - balls[ball1].x))/((balls[ball2].mass/balls[ball1].mass) + 1);
+                            var phi = Math.atan2(balls[ball2].y - balls[ball1].y, balls[ball2].x - balls[ball1].x);
+                            balls[ball1].x -= overlap * Math.cos(phi)/((balls[ball1].mass/balls[ball2].mass) + 1);
+                            balls[ball1].y -= overlap * Math.sin(phi)/((balls[ball1].mass/balls[ball2].mass) + 1);
+                            balls[ball2].x += overlap * Math.cos(phi)/((balls[ball2].mass/balls[ball1].mass) + 1);
+                            balls[ball2].y += overlap * Math.sin(phi)/((balls[ball2].mass/balls[ball1].mass) + 1);
                         }
 
                         var theta1 = Math.atan2(balls[ball1].dy, balls[ball1].dx);
                         var theta2 = Math.atan2(balls[ball2].dy, balls[ball2].dx);
-                        var phi = Math.atan2(balls[ball2].y - balls[ball1].y, balls[ball2].x - balls[ball1].x);
+                        phi = Math.atan2(balls[ball2].y - balls[ball1].y, balls[ball2].x - balls[ball1].x);
                         var m1 = balls[ball1].mass;
                         var m2 = balls[ball2].mass;
                         var v1 = Math.sqrt(balls[ball1].dx**2 + balls[ball1].dy**2);
@@ -158,6 +160,7 @@ function applyCollision() {
 }    
 
 function drawobjects() {
+    if(trail == false || trailLength){ctx.clearRect(0, 0, canvas.width, canvas.height);}
     for(var ball in balls){
         if(balls[ball].color.indexOf("rgb") == 0){
             ctx.beginPath();

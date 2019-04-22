@@ -35,13 +35,15 @@ canvas.onmousedown = function(e){
         if(scrollTimer != 0){clearTimeout(scrollTimer);}
         scrollTimer = window.setTimeout("scrollStop()", 500);
     }
+
+    drawobjects();
 };
 
 canvas.onmouseup = function(e){
     if(e.button == 0){
         clicks["leftup"] = {x:e.clientX, y:e.clientY};
         clicks["leftheld"] = false;
-
+        
         balls[balls.length] = {
             radius:standardRadiusBalls,
             mass:standardRadiusBalls**3,
@@ -71,15 +73,19 @@ canvas.onmouseup = function(e){
         clicks["rightdown"] = {x:".", y:"."};
         clicks["rightmove"] = {x:".", y:"."};
     }
+
+    drawobjects();
 };
 
 canvas.onmousemove = function(e){
     if(clicks["leftheld"]){
         clicks["leftmove"] = {x:e.clientX, y:e.clientY};
+        drawobjects();
     }
 
     if(clicks["rightheld"]){
         clicks["rightmove"] = {x:e.clientX, y:e.clientY};
+        drawobjects();
     }
 
     if(clicks["move"]){
@@ -91,6 +97,7 @@ canvas.onmousemove = function(e){
         balls[clicks["move"]].dy = e.clientY - clicks["moved"].y;
 
         clicks["moved"] = {x:e.clientX, y:e.clientY};
+        drawobjects();
     }
 };
 
@@ -146,7 +153,6 @@ function checkKeyDown(e) {
             balls = JSON.parse(JSON.stringify(frameHistory[currentFrame-1].balls));
             walls = JSON.parse(JSON.stringify(frameHistory[currentFrame-1].walls));
             currentFrame--;
-            if(trail == false || trailLength){ctx.clearRect(0, 0, canvas.width, canvas.height);}
             drawobjects();
         }
     }
@@ -159,7 +165,6 @@ function checkKeyDown(e) {
                 balls = JSON.parse(JSON.stringify(frameHistory[currentFrame+1].balls));
                 walls = JSON.parse(JSON.stringify(frameHistory[currentFrame+1].walls));
                 currentFrame++;
-                if(trail == false || trailLength){ctx.clearRect(0, 0, canvas.width, canvas.height);}
                 drawobjects();
             }
         }
@@ -200,26 +205,5 @@ function checkKeyDown(e) {
     }
     if (e.keyCode == '84'){ //t
         toggle("trail");
-    }
-}
-
-function toggle(variable){
-    window[variable] = !window[variable];
-    document.getElementById(variable + "CB").checked = window[variable];
-
-    if(variable == "paused"){
-        if(!paused){requestAnimationFrame(draw);}
-    }
-}
-
-var basegravityScale = 0.5;
-var basefrictionScale = 0.005;
-var basespeed = 1;
-
-function change(variable){
-    window[variable] = window["base" + variable] * Number(document.getElementById(variable).value)/100;
-
-    if(variable == "trailLength"){
-        window[variable] = Number(document.getElementById(variable).value);
     }
 }

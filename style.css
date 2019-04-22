@@ -15,11 +15,6 @@ body{
     height: 100%;
 }
 
-.inputField{
-    width: 25px;
-    height: 10px;
-}
-
 #nav{
     position: absolute;
     top: 1vw;
@@ -59,12 +54,23 @@ body{
     left: 120px;
 }
 
+.inputField{
+    width: 25px;
+    height: 10px;
+}
+
 #upload{
     display: none;
 }
 #uploadBtn{
     width: 25px;
     height: 10px;
+}
+
+#currentFrame{
+    position: absolute;
+    bottom: 1vw;
+    right: 1vw;
 }
 
 input[type=number]::-webkit-inner-spin-button, 
