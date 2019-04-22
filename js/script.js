@@ -19,12 +19,13 @@ var standardColorBalls = "randomColor()";
 var gravityScale = 0.5;
 var frictionScale = 0.005;
 var speed = 1;
+var trailLength;
 
 var frameHistory = [];
 var currentFrame = 0;
 
 function draw() {
-    if(trail == false){ctx.clearRect(0, 0, canvas.width, canvas.height);}
+    if(trail == false || trailLength){ctx.clearRect(0, 0, canvas.width, canvas.height);}
 
     frameHistory[currentFrame] = JSON.parse(JSON.stringify(balls));
     currentFrame++;
@@ -66,6 +67,22 @@ function applyCollision() {
             for (var ball2 in balls) {
                 if(ball1 < ball2){
                     if(Math.hypot(balls[ball2].x - balls[ball1].x, balls[ball2].y - balls[ball1].y) <= balls[ball1].radius + balls[ball2].radius){
+                        if(Math.hypot((balls[ball2].x - balls[ball2].dx) - (balls[ball1].x - balls[ball1].dx), (balls[ball2].y - balls[ball2].dy) - (balls[ball1].y - balls[ball1].dy)) > balls[ball1].radius + balls[ball2].radius){
+                            while(Math.hypot(balls[ball2].x - balls[ball1].x, balls[ball2].y - balls[ball1].y) <= balls[ball1].radius + balls[ball2].radius){
+                                balls[ball1].x -= balls[ball1].dx/8;
+                                balls[ball1].y -= balls[ball1].dy/8;
+                                balls[ball2].x -= balls[ball2].dx/8;
+                                balls[ball2].y -= balls[ball2].dy/8;
+                            }
+                        }
+                        else{
+                            var overlap = balls[ball1].radius + balls[ball2].radius - Math.hypot(balls[ball1].x - balls[ball2].x,balls[ball1].y - balls[ball2].y);
+                            balls[ball1].x -= overlap * Math.cos(Math.atan2(balls[ball2].y - balls[ball1].y, balls[ball2].x - balls[ball1].x))/((balls[ball1].mass/balls[ball2].mass) + 1);
+                            balls[ball1].y -= overlap * Math.sin(Math.atan2(balls[ball2].y - balls[ball1].y, balls[ball2].x - balls[ball1].x))/((balls[ball1].mass/balls[ball2].mass) + 1);
+                            balls[ball2].x += overlap * Math.cos(Math.atan2(balls[ball2].y - balls[ball1].y, balls[ball2].x - balls[ball1].x))/((balls[ball2].mass/balls[ball1].mass) + 1);
+                            balls[ball2].y += overlap * Math.sin(Math.atan2(balls[ball2].y - balls[ball1].y, balls[ball2].x - balls[ball1].x))/((balls[ball2].mass/balls[ball1].mass) + 1);
+                        }
+
                         var theta1 = Math.atan2(balls[ball1].dy, balls[ball1].dx);
                         var theta2 = Math.atan2(balls[ball2].dy, balls[ball2].dx);
                         var phi = Math.atan2(balls[ball2].y - balls[ball1].y, balls[ball2].x - balls[ball1].x);
@@ -78,12 +95,6 @@ function applyCollision() {
                         balls[ball1].dy = (v1 * Math.cos(theta1 - phi) * (m1-m2) + 2*m2*v2*Math.cos(theta2 - phi)) / (m1+m2) * Math.sin(phi) + v1*Math.sin(theta1-phi) * Math.sin(phi+Math.PI/2);
                         balls[ball2].dx = (v2 * Math.cos(theta2 - phi) * (m2-m1) + 2*m1*v1*Math.cos(theta1 - phi)) / (m1+m2) * Math.cos(phi) + v2*Math.sin(theta2-phi) * Math.cos(phi+Math.PI/2);
                         balls[ball2].dy = (v2 * Math.cos(theta2 - phi) * (m2-m1) + 2*m1*v1*Math.cos(theta1 - phi)) / (m1+m2) * Math.sin(phi) + v2*Math.sin(theta2-phi) * Math.sin(phi+Math.PI/2);
-
-                        var overlap = balls[ball1].radius + balls[ball2].radius - Math.hypot(balls[ball1].x - balls[ball2].x,balls[ball1].y - balls[ball2].y);
-                        balls[ball1].x -= overlap * Math.cos(phi)/((balls[ball1].mass/balls[ball2].mass) + 1);
-                        balls[ball1].y -= overlap * Math.sin(phi)/((balls[ball1].mass/balls[ball2].mass) + 1);
-                        balls[ball2].x += overlap * Math.cos(phi)/((balls[ball2].mass/balls[ball1].mass) + 1);
-                        balls[ball2].y += overlap * Math.sin(phi)/((balls[ball2].mass/balls[ball1].mass) + 1);
                     }
                 }
             }
@@ -158,14 +169,15 @@ function drawobjects() {
             ctx.strokeStyle = balls[ball].color;
             ctx.stroke();
 
-            ctx.fillStyle = balls[ball].color; 
-            ctx.beginPath();
-            ctx.moveTo(balls[ball].x,balls[ball].y);
-            ctx.lineTo(balls[ball].x+balls[ball].dx,balls[ball].y+balls[ball].dy);
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = balls[ball].color;
-            ctx.stroke();
-            
+            if(trail == false || trailLength){
+                ctx.fillStyle = balls[ball].color; 
+                ctx.beginPath();
+                ctx.moveTo(balls[ball].x,balls[ball].y);
+                ctx.lineTo(balls[ball].x+balls[ball].dx,balls[ball].y+balls[ball].dy);
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = balls[ball].color;
+                ctx.stroke();
+            }
         }
         else{
             ctx.beginPath();
@@ -175,6 +187,32 @@ function drawobjects() {
             ctx.clip();
             ctx.drawImage(document.getElementById(balls[ball].color), balls[ball].x - balls[ball].radius, balls[ball].y - balls[ball].radius,balls[ball].radius*2,balls[ball].radius*2);
             ctx.restore();
+        }
+    }
+
+    if(trailLength && trail){
+        for(var frame = currentFrame-trailLength; frame<currentFrame; frame++){
+            for(var ball in frameHistory[frame]){
+                if(frameHistory[frame][ball].color.indexOf("rgb") == 0){
+                    ctx.beginPath();
+                    ctx.arc(frameHistory[frame][ball].x, frameHistory[frame][ball].y, frameHistory[frame][ball].radius, 0, 2*Math.PI);
+                    ctx.closePath();
+                    ctx.fillStyle = frameHistory[frame][ball].color.slice(0, -1) + ", " + (frame-currentFrame+trailLength)/(trailLength*2) + ")";
+                    ctx.fill();
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = frameHistory[frame][ball].color.slice(0, -1) + ", " + (frame-currentFrame+trailLength)/(trailLength) + ")";
+                    ctx.stroke();
+                }
+                else{
+                    ctx.beginPath();
+                    ctx.arc(frameHistory[frame][ball].x, frameHistory[frame][ball].y, frameHistory[frame][ball].radius, 0, 2*Math.PI);
+                    ctx.closePath();
+                    ctx.save();
+                    ctx.clip();
+                    ctx.drawImage(document.getElementById(frameHistory[frame][ball].color), frameHistory[frame][ball].x - frameHistory[frame][ball].radius, frameHistory[frame][ball].y - frameHistory[frame][ball].radius,frameHistory[frame][ball].radius*2,frameHistory[frame][ball].radius*2);
+                    ctx.restore();
+                }
+            }
         }
     }
 
@@ -188,7 +226,7 @@ function drawobjects() {
         ctx.stroke();
     }
 
-    if(trail==false){
+    if(trail == false || trailLength){
         ctx.fillStyle = "Black"; 
         ctx.beginPath();
         ctx.moveTo(clicks["leftdown"].x,clicks["leftdown"].y);

@@ -145,7 +145,7 @@ function checkKeyDown(e) {
         if(paused){
             balls = JSON.parse(JSON.stringify(frameHistory[currentFrame-1]));
             currentFrame--;
-            if(trail == false){ctx.clearRect(0, 0, canvas.width, canvas.height);}
+            if(trail == false || trailLength){ctx.clearRect(0, 0, canvas.width, canvas.height);}
             drawobjects();
         }
     }
@@ -157,7 +157,7 @@ function checkKeyDown(e) {
             else{
                 balls = JSON.parse(JSON.stringify(frameHistory[currentFrame+1]));
                 currentFrame++;
-                if(trail == false){ctx.clearRect(0, 0, canvas.width, canvas.height);}
+                if(trail == false || trailLength){ctx.clearRect(0, 0, canvas.width, canvas.height);}
                 drawobjects();
             }
         }
@@ -216,4 +216,8 @@ var basespeed = 1;
 
 function change(variable){
     window[variable] = window["base" + variable] * Number(document.getElementById(variable).value)/100;
+
+    if(variable == "trailLength"){
+        window[variable] = Number(document.getElementById(variable).value);
+    }
 }

@@ -1,5 +1,5 @@
 function openNav(){
-	if(document.getElementById("nav").style.width == "140px"){
+	if(document.getElementById("nav").style.width == "150px"){
 		document.getElementById("nav").style.height = "35px";
 		document.getElementById("nav").style.width = "35px";
 		document.getElementById("settings").style.display = "none";
@@ -7,7 +7,7 @@ function openNav(){
 	}
 	else{
 		document.getElementById("nav").style.height = "175px";
-		document.getElementById("nav").style.width = "140px";
+		document.getElementById("nav").style.width = "150px";
 		document.getElementById("settings").style.display = "block";
 		document.getElementById("resetIcon").style.display = "block";
 	}
@@ -22,5 +22,6 @@ function reset(){
 
 	document.getElementById("gravityScale").value = 100; change("gravityScale");
 	document.getElementById("frictionScale").value = 100; change("frictionScale");
+	document.getElementById("trailLength").value = ""; change("trailLength");
 	document.getElementById("speed").value = 100; change("speed");
 }
