@@ -125,20 +125,21 @@ function scrollStop(){
 
 var imageCount = 0;
 function previewFile(){
-    var file = document.querySelector('toggle[type=file]').files[0];
+    var file = document.querySelector("input[type=file]").files[0];
     var reader = new FileReader();
 
     if(file){
         reader.readAsDataURL(file);
-    }
-    else{
-        standardColorBalls = "randomColor()";
     }
 
     reader.onloadend = function () {
         imageCount++;
         document.getElementById("images").innerHTML += "<img src='" + reader.result + "' id='img" + imageCount + "' style='display:none;'/>";
         standardColorBalls = "image()";
+        if(document.getElementById("colorCB").checked){
+            document.getElementById("colorCB").checked = !document.getElementById("colorCB").checked;
+            document.getElementById("imageCB").checked = !document.getElementById("imageCB").checked;
+        }
     }
 }
 
@@ -169,6 +170,18 @@ function checkKeyDown(e) {
             }
         }
     }
+    if (e.keyCode == 46){ //delete
+        for(var i = currentFrame-1; i>0; i--){
+            if(frameHistory[i].balls.length<balls.length){
+                balls.pop();
+                i = 0;
+            }
+            else if(frameHistory[i].walls.length<walls.length){
+                walls.pop();
+                i = 0;
+            }
+        }
+    }
 
     if (e.keyCode == '72'){ //h
         if(document.getElementById("overlay").style.display == "none"){document.getElementById("overlay").style.display = "block";}
@@ -192,7 +205,8 @@ function checkKeyDown(e) {
         walls = [];
     }
     if (e.keyCode == '67'){ //c
-        toggle("collision");
+        toggle("collisionBalls");
+        toggle("collisionWalls");
     }
     if (e.keyCode == '70'){ //f
         toggle("friction");

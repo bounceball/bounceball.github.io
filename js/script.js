@@ -3,14 +3,16 @@ var ctx = canvas.getContext("2d");
 canvas.setAttribute("width", window.innerWidth);
 canvas.setAttribute("height", window.innerHeight);
 
-document.addEventListener('contextmenu', event => event.preventDefault());
+document.addEventListener("contextmenu", event => event.preventDefault());
 
 var balls = [];
 var walls = [];
 
 var friction = true;
 var gravity = false;
-var collision = true;
+var collisionBalls = true;
+var collisionWalls = true;
+var collisionEdges = true;
 var paused = false;
 var trail = false;
 var standardRadiusBalls = 30;
@@ -60,7 +62,7 @@ function moveBalls() {
 }
 
 function applyCollision() {
-    if(collision){
+    if(collisionBalls){
         for(var ball1 in balls){
             for (var ball2 in balls) {
                 if(ball1 < ball2){
@@ -103,59 +105,63 @@ function applyCollision() {
         }
     }
 
-    for(var wall1 in walls){
-        for (var ball1 in balls){
-            for (var i = 0; i <= Math.ceil(Math.sqrt(balls[ball1].dx**2 + balls[ball1].dy**2)/(balls[ball1].radius*2)); i++) {
-                var ball = balls[ball1];
-                var wall = walls[wall1];
+    if(collisionWalls){
+        for(var wall1 in walls){
+            for (var ball1 in balls){
+                for (var i = 0; i <= Math.ceil(Math.sqrt(balls[ball1].dx**2 + balls[ball1].dy**2)/(balls[ball1].radius*2)); i++) {
+                    var ball = balls[ball1];
+                    var wall = walls[wall1];
 
-                if(Math.sqrt(ball.dx**2 + ball.dy**2) !== 0){
-                    var balldx = ball.dx/Math.ceil(Math.sqrt(ball.dx**2 + ball.dy**2)/(ball.radius*2))*i;
-                    var balldy = ball.dy/Math.ceil(Math.sqrt(ball.dx**2 + ball.dy**2)/(ball.radius*2))*i;
-                }
-                else{
-                    var balldx = 0;
-                    var balldy = 0;
-                }
+                    if(Math.sqrt(ball.dx**2 + ball.dy**2) !== 0){
+                        var balldx = ball.dx/Math.ceil(Math.sqrt(ball.dx**2 + ball.dy**2)/(ball.radius*2))*i;
+                        var balldy = ball.dy/Math.ceil(Math.sqrt(ball.dx**2 + ball.dy**2)/(ball.radius*2))*i;
+                    }
+                    else{
+                        var balldx = 0;
+                        var balldy = 0;
+                    }
 
-                var dx=(ball.x+balldx)-wall.x1;
-                var dy=(ball.y+balldy)-wall.y1;
+                    var dx=(ball.x+balldx)-wall.x1;
+                    var dy=(ball.y+balldy)-wall.y1;
 
-                var dxx=wall.x2-wall.x1;
-                var dyy=wall.y2-wall.y1;
+                    var dxx=wall.x2-wall.x1;
+                    var dyy=wall.y2-wall.y1;
 
-                var t=(dx*dxx+dy*dyy)/(dxx*dxx+dyy*dyy);
+                    var t=(dx*dxx+dy*dyy)/(dxx*dxx+dyy*dyy);
 
-                var x=wall.x1+dxx*t;
-                var y=wall.y1+dyy*t;
+                    var x=wall.x1+dxx*t;
+                    var y=wall.y1+dyy*t;
 
-                if(t<0){x=wall.x1;y=wall.y1;}
-                if(t>1){x=wall.x2;y=wall.y2;}
+                    if(t<0){x=wall.x1;y=wall.y1;}
+                    if(t>1){x=wall.x2;y=wall.y2;}
 
-                if((Math.hypot((ball.x + balldx) - x, (ball.y + balldy) - y) < ball.radius)){
-                    var ballAngle = (-Math.atan2(ball.dy, ball.dx)+Math.PI*2)%(Math.PI*2);
-                    var wallAngle = ((((-(Math.atan2(y - (ball.y + balldy), x - (ball.x + balldx))))+Math.PI*2)%(Math.PI*2))+Math.PI/2)%(Math.PI*2);
-                    var newAngle = 2*wallAngle-ballAngle;
-                    var ballspeed = Math.sqrt(ball.dx**2 + ball.dy**2);
-                    balls[ball1].dx = Math.cos(newAngle) * ballspeed;
-                    balls[ball1].dy = -Math.sin(newAngle) * ballspeed;
-                }
+                    if((Math.hypot((ball.x + balldx) - x, (ball.y + balldy) - y) < ball.radius)){
+                        var ballAngle = (-Math.atan2(ball.dy, ball.dx)+Math.PI*2)%(Math.PI*2);
+                        var wallAngle = ((((-(Math.atan2(y - (ball.y + balldy), x - (ball.x + balldx))))+Math.PI*2)%(Math.PI*2))+Math.PI/2)%(Math.PI*2);
+                        var newAngle = 2*wallAngle-ballAngle;
+                        var ballspeed = Math.sqrt(ball.dx**2 + ball.dy**2);
+                        balls[ball1].dx = Math.cos(newAngle) * ballspeed;
+                        balls[ball1].dy = -Math.sin(newAngle) * ballspeed;
+                    }
 
-                if(Math.hypot(ball.x - x, ball.y - y) < ball.radius){
-                    var theta = Math.atan2((ball.y - y), (ball.x - x));
-                    var overlap = ball.radius - Math.hypot(ball.x - x, ball.y - y);
-                    balls[ball1].x += overlap * Math.cos(theta);
-                    balls[ball1].y += overlap * Math.sin(theta);
+                    if(Math.hypot(ball.x - x, ball.y - y) < ball.radius){
+                        var theta = Math.atan2((ball.y - y), (ball.x - x));
+                        var overlap = ball.radius - Math.hypot(ball.x - x, ball.y - y);
+                        balls[ball1].x += overlap * Math.cos(theta);
+                        balls[ball1].y += overlap * Math.sin(theta);
+                    }
                 }
             }
         }
     }
 
-    for(var ball in balls){
-        if(balls[ball].x < balls[ball].radius){balls[ball].x = balls[ball].radius; balls[ball].dx *= -1;}
-        if(balls[ball].x > canvas.width - balls[ball].radius){balls[ball].x = canvas.width - balls[ball].radius; balls[ball].dx *= -1;}
-        if(balls[ball].y < balls[ball].radius){balls[ball].y = balls[ball].radius; balls[ball].dy *= -1;}
-        if(balls[ball].y > canvas.height - balls[ball].radius){balls[ball].y = canvas.height - balls[ball].radius; balls[ball].dy *= -1;}
+    if(collisionEdges){
+        for(var ball in balls){
+            if(balls[ball].x < balls[ball].radius){balls[ball].x = balls[ball].radius; balls[ball].dx *= -1;}
+            if(balls[ball].x > canvas.width - balls[ball].radius){balls[ball].x = canvas.width - balls[ball].radius; balls[ball].dx *= -1;}
+            if(balls[ball].y < balls[ball].radius){balls[ball].y = balls[ball].radius; balls[ball].dy *= -1;}
+            if(balls[ball].y > canvas.height - balls[ball].radius){balls[ball].y = canvas.height - balls[ball].radius; balls[ball].dy *= -1;}
+        }
     }
 }    
 
@@ -264,7 +270,9 @@ function drawobjects() {
     }
 }
 
-function randomColor(){return "rgb(" + Math.floor(Math.random() * 250) + ", " + Math.floor(Math.random() * 250) + ", " + Math.floor(Math.random() * 250) + ")";}
+var redMin = 0; var greenMin = 0; var blueMin = 0;
+var redMax = 250; var greenMax = 250; var blueMax = 250;
+function randomColor(){return "rgb(" + Math.floor(Math.random()*(redMax-redMin+1)+redMin) + ", " + Math.floor(Math.random()*(greenMax-greenMin+1)+greenMin) + ", " + Math.floor(Math.random()*(blueMax-blueMin+1)+blueMin) + ")";}
 function image(){return "img" + imageCount;}
 
 draw();

@@ -13,18 +13,86 @@
         </div>
 
         <div id ="nav">
-            <img src="icons/Settings.png" id="settingsIcon" class="icon" onclick="openNav('settings')"/>
+            <img src="icons/Settings.png" id="settingsIcon" class="icon" onclick="nav('settings')"/>
 
             <div id="settings">
-                <input type="checkbox" id="gravityCB" onchange="toggle('gravity')"> Gravity: <input type="number" id="gravityScale" class="inputField" value="100" onblur="change('gravityScale')"> %<br>
-                <input type="checkbox" id="frictionCB" onchange="toggle('friction')" checked> Friction: <input type="number" id="frictionScale" class="inputField" value="100" onblur="change('frictionScale')"> %<br>
-                <input type="checkbox" id="trailCB" onchange="toggle('trail')"> Trail: <input type="number" id="trailLength" class="inputField" value="" onblur="change('trailLength')"> frames<br>
-                <input type="checkbox" id="collisionCB" onchange="toggle('collision')" checked> Collision<br>
-                <input type="checkbox" id="pausedCB" onchange="toggle('paused')"> Paused<br>
-                Speed: <input type="number" id="speed" class="inputField" value="100" onblur="change('speed')"> %<br>
-                <a onclick="document.getElementById('upload').click();">Upload image</a>
-                <input type="file" accept="image/*" onchange="previewFile()" id="upload">
+                <div class="checkBox">
+                    <input type="checkbox" id="gravityCB" onchange="toggle('gravity')"/>
+                    <label for="gravityCB" id="gravityCBLabel"></label>
+                    <a onclick="toggle('gravity')">Gravity:</a> <input type="number" id="gravityScale" value="100" onblur="change('gravityScale', '%')"> %
+                </div>
+
+                <div class="checkBox">
+                    <input type="checkbox" id="frictionCB" onchange="toggle('friction')" checked/>
+                    <label for="frictionCB" id="frictionCBLabel"></label>
+                    <a onclick="toggle('friction')">Friction:</a> <input type="number" id="frictionScale" value="100" onblur="change('frictioScale', '%')"> %
+                </div>
+
+                <div class="checkBox">
+                    <input type="checkbox" id="trailCB" onchange="toggle('trail')"/>
+                    <label for="trailCB" id="trailCBLabel"></label>
+                    <a onclick="toggle('trail')">Trail:</a> <input type="number" id="trailLength" value="" onblur="change('trailLength', '#')"> frames
+                </div>
+
+                <div class="checkBox">
+                    <input type="checkbox" id="pausedCB" onchange="toggle('paused')"/>
+                    <label for="pausedCB" id="pausedCBLabel"></label>
+                    <a onclick="toggle('paused')">Paused</a>
+                </div>
+
+                &nbsp;Collision with:<br>
+
+                <div class="checkBox">
+                    <input type="checkbox" id="collisionBallsCB" onchange="toggle('collisionBalls')" checked/>
+                    <label for="collisionBallsCB" id="collisionBallsCBLabel"></label>
+                    <a onclick="toggle('collisionBalls')">Balls</a>
+                    <input type="checkbox" id="collisionWallsCB" onchange="toggle('collisionWalls')" checked/>
+                    <label for="collisionWallsCB" id="collisionWallsCBLabel"></label>
+                    <a onclick="toggle('collisionWalls')">Walls</a>
+                    <input type="checkbox" id="collisionEdgesCB" onchange="toggle('collisionEdges')" checked/>
+                    <label for="collisionEdgesCB" id="collisionEdgesCBLabel"></label>
+                    <a onclick="toggle('collisionEdges')">Edges</a>
+                </div>
+
+                &nbsp;Speed: <input type="number" id="speed" value="100" onblur="change('speed', '%')"> %<br>
+
+                &nbsp;Color:
+
+                <div class="checkBox">
+                    <input type="checkbox" id="colorCB" onchange="toggle('color')" checked/>
+                    <label for="colorCB" id="colorCBLabel"></label>
+                    <a onclick="toggle('color')">Random RGB color:</a><br>
+                    &nbsp;Red: <input type="number" id="redMin" value="0" onblur="change('redMin', '#')"> - <input type="number" id="redMax" value="250" onblur="change('redMax', '#')"><br>
+                    &nbsp;Green: <input type="number" id="greenMin" value="0" onblur="change('greenMin', '#')"> - <input type="number" id="greenMax" value="250" onblur="change('greenMax', '#')"><br>
+                    &nbsp;Blue: <input type="number" id="blueMin" value="0" onblur="change('blueMin', '#')"> - <input type="number" id="blueMax" value="250" onblur="change('blueMax', '#')">
+                </div>
+
+                <div class="checkBox">
+                    <input type="checkbox" id="imageCB" onchange="toggle('color')"/>
+                    <label for="imageCB" id="imageCBLabel"></label>
+                    <a onclick="toggle('color')">Image:</a>
+                    &nbsp;<a onclick="document.getElementById('upload').click();" id="uploadTxt">Upload image</a>
+                    <input type="file" accept="image/*" onchange="previewFile()" id="upload">
+                </div>
             </div>
+
+            <div id="info">
+                Leftclick and drag to spawn balls<br>
+                Rightclick and drag to draw walls<br>
+                Scrollwheel to adjust ball radius<br>
+                G to toggle Gravity<br>
+                F to toggle Friction<br>
+                C to toggle wall and ball Collision<br>
+                T to toggle Trail<br>
+                P to Pause<br>
+                Left/Right arrow key while paused for previous/next frame<br>
+                R to Reset<br>
+                N to spawn a New random ball<br>
+                H to Hide the overlay<br>
+                Delete to Delete the last placed ball/wall
+            </div>
+
+            <!--<img src="icons/Info.png" id="infoIcon" class="icon" onclick="nav('info')"/>-->
 
             <img src="icons/Reset.png" id="resetIcon" class="icon" onclick="reset()"/>
         </div>
