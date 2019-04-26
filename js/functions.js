@@ -34,6 +34,14 @@ function toggle(variable){
 
     if(variable == "paused"){
         if(!paused){requestAnimationFrame(draw);}
+        if(paused && mobile()){
+            document.getElementById("left").style.display = "block";
+            document.getElementById("right").style.display = "block";
+        }
+        else{
+            document.getElementById("left").style.display = "none";
+            document.getElementById("right").style.display = "none";
+        }
     }
 
     }
@@ -53,10 +61,38 @@ function change(variable, method){
     }
 }
 
-var redMin = 0; var greenMin = 0; var blueMin = 0;
-var redMax = 250; var greenMax = 250; var blueMax = 250;
-function randomColor(){return "rgb(" + Math.floor(Math.random()*(redMax-redMin+1)+redMin) + ", " + Math.floor(Math.random()*(greenMax-greenMin+1)+greenMin) + ", " + Math.floor(Math.random()*(blueMax-blueMin+1)+blueMin) + ")";}
-function image(){return "img" + imageCount;}
+
+function undo(){
+    for(var i = currentFrame-1; i>0; i--){
+        if(frameHistory[i].balls.length<balls.length){
+            balls.pop();
+            i = 0;
+        }
+        else if(frameHistory[i].walls.length<walls.length){
+            walls.pop();
+            i = 0;
+        }
+    }
+}
+
+function previousFrame(){
+    balls = JSON.parse(JSON.stringify(frameHistory[currentFrame-1].balls));
+    walls = JSON.parse(JSON.stringify(frameHistory[currentFrame-1].walls));
+    currentFrame--;
+    drawobjects();
+}
+function nextFrame(){
+    if(currentFrame == frameHistory.length || currentFrame == frameHistory.length-1){
+        requestAnimationFrame(draw);
+    }
+    else{
+        balls = JSON.parse(JSON.stringify(frameHistory[currentFrame+1].balls));
+        walls = JSON.parse(JSON.stringify(frameHistory[currentFrame+1].walls));
+        currentFrame++;
+        drawobjects();
+    }
+}
+
 
 function moveStop(ball){
     balls[ball].dx = 0;
@@ -66,6 +102,25 @@ function moveStop(ball){
 function scrollStop(){
     clicks["scroll"] = {x:".", y:"."};
 }
+
+
+function mode(mode){
+    if(mode == "ball"){
+        document.getElementById("ballIcon").style.display = "block";
+        document.getElementById("wallIcon").style.display = "none";
+        mobileClickMode = 0;
+    }
+    if(mode == "wall"){
+        document.getElementById("ballIcon").style.display = "none";
+        document.getElementById("wallIcon").style.display = "block";
+        mobileClickMode = 2;
+    }
+}
+
+var redMin = 0; var greenMin = 0; var blueMin = 0;
+var redMax = 250; var greenMax = 250; var blueMax = 250;
+function randomColor(){return "rgb(" + Math.floor(Math.random()*(redMax-redMin+1)+redMin) + ", " + Math.floor(Math.random()*(greenMax-greenMin+1)+greenMin) + ", " + Math.floor(Math.random()*(blueMax-blueMin+1)+blueMin) + ")";}
+function image(){return "img" + imageCount;}
 
 function mobile(){
     var check = false;

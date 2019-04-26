@@ -77,28 +77,31 @@
             </div>
 
             <div id="info">
-                Leftclick and drag to spawn balls<br>
-                Rightclick and drag to draw walls<br>
-                Scrollwheel to adjust ball radius<br>
-                G to toggle Gravity<br>
-                F to toggle Friction<br>
-                C to toggle wall and ball Collision<br>
-                T to toggle Trail<br>
-                P to Pause<br>
-                Left/Right arrow key while paused for previous/next frame<br>
-                R to Reset<br>
-                N to spawn a New random ball<br>
-                H to Hide the overlay<br>
-                Delete to Delete the last placed ball/wall
+                Leftclick: Spawn balls<br>
+                Rightclick: Draw walls<br>
+                Scroll: Adjust ball radius<br><br>
+                Arrow keys while paused:<br>Next/Previous frame<br><br>
+                R: Reset<br><br>
+                N: Spawn a new ball<br><br>
+                H: Hide the overlay<br><br>
+                Delete: Undo last ball/wall
             </div>
 
             <img src="icons/Info.png" id="infoIcon" class="icon" onclick="nav('info')"/>
 
+            <img src="icons/Undo.png" id="undoIcon" class="icon" onclick="undo()"/>
+
+            <img src="icons/Ball.png" id="ballIcon" class="icon" onclick="mode('wall')"/>
+            <img src="icons/Wall.png" id="wallIcon" class="icon" onclick="mode('ball')"/>
+
+            <input type="range" min="10" max="100" value="30" class="slider" id="slider">
+
             <img src="icons/Reset.png" id="resetIcon" class="icon" onclick="reset()"/>
         </div>
-
-        <font id="currentFrame"></font>
     </div>
+
+    <div id="left" onclick="previousFrame()"></div>
+    <div id="right" onclick="nextFrame()"></div>
 
     <canvas id="canvas"></canvas>
 </body>

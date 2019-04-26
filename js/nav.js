@@ -9,7 +9,15 @@ function nav(content){
 function openNav(content){
 	document.getElementById("nav").style.height = "290px";
 	document.getElementById("nav").style.width = "200px";
-	document.getElementById("infoIcon").style.display = "block";
+
+	if(mobile() == false){
+		document.getElementById("infoIcon").style.display = "block";
+	}
+	else{
+		document.getElementById("ballIcon").style.display = "block";
+		document.getElementById("undoIcon").style.display = "block";
+		document.getElementById("slider").style.display = "block";
+	}
 
 	if(content == "settings"){
 		document.getElementById("settings").style.display = "block";
@@ -30,6 +38,10 @@ function closeNav() {
 	document.getElementById("resetIcon").style.display = "none";
 	document.getElementById("info").style.display = "none";
 	document.getElementById("infoIcon").style.display = "none";
+	document.getElementById("ballIcon").style.display = "none";
+	document.getElementById("wallIcon").style.display = "none";
+	document.getElementById("undoIcon").style.display = "none";
+	document.getElementById("slider").style.display = "none";
 }
 
 function reset(){
@@ -52,41 +64,14 @@ function reset(){
 	document.getElementById("redMax").value = 250; change("redMax", "#");
 	document.getElementById("greenMax").value = 250; change("greenMax", "#");
 	document.getElementById("blueMax").value = 250; change("blueMax", "#");
-}
 
-function toggle(variable){
-	if(variable == "color"){
-		if(standardColorBalls == "image()"){
-			standardColorBalls = "randomColor()";
-			document.getElementById("colorCB").checked = true;
-			document.getElementById("imageCB").checked = false;
-		}
-		else{
-			document.getElementById("upload").click();
-		}
+	if(mobile()){
+		document.getElementById("slider").value = 30;
+		
+		clicks["scroll"] = {x:canvas.width/2, y:canvas.height/2};
+        if(scrollTimer != 0){clearTimeout(scrollTimer);}
+        scrollTimer = window.setTimeout("scrollStop()", 250);
+
+        standardRadiusBalls = Number(document.getElementById("slider").value);
 	}
-	else{
-
-    window[variable] = !window[variable];
-    document.getElementById(variable + "CB").checked = window[variable];
-
-    if(variable == "paused"){
-        if(!paused){requestAnimationFrame(draw);}
-    }
-
-	}
-}
-
-var basegravityScale = 0.5;
-var basefrictionScale = 0.005;
-var basespeed = 1;
-
-function change(variable, method){
-	if(method == "%"){
-    	window[variable] = window["base" + variable] * Number(document.getElementById(variable).value)/100;
-    }
-
-    if(method == "#"){
-        window[variable] = Number(document.getElementById(variable).value);
-    }
 }

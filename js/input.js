@@ -1,6 +1,7 @@
 var clicks = {leftdown:".",leftup:".",rightdown:".",rightup:".",leftmove:".",rightmove:".",scroll:".", move:false};
 var scrollTimer = 0;
 var moveTimer = 0;
+var mobileClickMode = 0;
 
 if(mobile() == false){
     canvas.onmousedown = function(e){
@@ -16,22 +17,40 @@ if(mobile() == false){
     };
 
     canvas.onwheel = function(e){
-        scroll(e.clientX, e.clientY, e.deltaY);
+        clicks["scroll"] = {x:e.clientX, y:e.clientY};
+        if(scrollTimer != 0){clearTimeout(scrollTimer);}
+        scrollTimer = window.setTimeout("scrollStop()", 250);
+
+        if(e.deltaY < 0){
+            if(standardRadiusBalls < 99){standardRadiusBalls += 2;}
+        }
+        if(e.deltaY > 0){
+            if(standardRadiusBalls > 11){standardRadiusBalls -= 2;}
+        }
     };
 }
 else{
     canvas.ontouchstart = function(e){
-        clickDown(e.touches[0].clientX, e.touches[0].clientY, 0);
+        clickDown(e.touches[0].clientX, e.touches[0].clientY, mobileClickMode);
     };
 
     canvas.ontouchend = function(e){
-        clickUp(event.changedTouches[event.changedTouches.length-1].pageX, event.changedTouches[event.changedTouches.length-1].pageY, 0);
+        clickUp(event.changedTouches[event.changedTouches.length-1].pageX, event.changedTouches[event.changedTouches.length-1].pageY, mobileClickMode);
     };
 
     canvas.ontouchmove = function(e){
         clickMove(e.touches[0].clientX, e.touches[0].clientY);
     };
+
+    document.getElementById("slider").oninput = function() {
+        clicks["scroll"] = {x:canvas.width/2, y:canvas.height/2};
+        if(scrollTimer != 0){clearTimeout(scrollTimer);}
+        scrollTimer = window.setTimeout("scrollStop()", 250);
+
+        standardRadiusBalls = Number(document.getElementById("slider").value);
+    }
 }
+
 
 function clickDown(x,y,mode){
     if(mode == 0){
@@ -129,19 +148,6 @@ function clickMove(x,y){
     }
 }
 
-function scroll(x,y,dy){
-    clicks["scroll"] = {x:x, y:y};
-    if(scrollTimer != 0){clearTimeout(scrollTimer);}
-    scrollTimer = window.setTimeout("scrollStop()", 250);
-
-    if(dy < 0){
-        if(standardRadiusBalls < 99){standardRadiusBalls += 2;}
-    }
-    if(dy > 0){
-        if(standardRadiusBalls > 11){standardRadiusBalls -= 2;}
-    }
-}
-
 document.onkeydown = checkKeyDown;
 
 function checkKeyDown(e) {
@@ -150,36 +156,16 @@ function checkKeyDown(e) {
     
     if (e.keyCode == '37'){ //left arrow
         if(paused){
-            balls = JSON.parse(JSON.stringify(frameHistory[currentFrame-1].balls));
-            walls = JSON.parse(JSON.stringify(frameHistory[currentFrame-1].walls));
-            currentFrame--;
-            drawobjects();
+            previousFrame();
         }
     }
     if (e.keyCode == '39'){ //right arrow
         if(paused){
-            if(currentFrame == frameHistory.length || currentFrame == frameHistory.length-1){
-                requestAnimationFrame(draw);
-            }
-            else{
-                balls = JSON.parse(JSON.stringify(frameHistory[currentFrame+1].balls));
-                walls = JSON.parse(JSON.stringify(frameHistory[currentFrame+1].walls));
-                currentFrame++;
-                drawobjects();
-            }
+            nextFrame();
         }
     }
     if (e.keyCode == 46){ //delete
-        for(var i = currentFrame-1; i>0; i--){
-            if(frameHistory[i].balls.length<balls.length){
-                balls.pop();
-                i = 0;
-            }
-            else if(frameHistory[i].walls.length<walls.length){
-                walls.pop();
-                i = 0;
-            }
-        }
+        undo();
     }
 
     if (e.keyCode == '72'){ //h
