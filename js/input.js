@@ -2,9 +2,40 @@ var clicks = {leftdown:".",leftup:".",rightdown:".",rightup:".",leftmove:".",rig
 var scrollTimer = 0;
 var moveTimer = 0;
 
-canvas.onmousedown = function(e){
-    if(e.button == 0){
-        clicks["leftdown"] = {x:e.clientX, y:e.clientY};
+if(mobile() == false){
+    canvas.onmousedown = function(e){
+        clickDown(e.clientX, e.clientY, e.button);
+    };
+
+    canvas.onmouseup = function(e){
+        clickUp(e.clientX, e.clientY, e.button);
+    };
+
+    canvas.onmousemove = function(e){
+        clickMove(e.clientX, e.clientY);
+    };
+
+    canvas.onwheel = function(e){
+        scroll(e.clientX, e.clientY, e.deltaY);
+    };
+}
+else{
+    canvas.ontouchstart = function(e){
+        clickDown(e.touches[0].clientX, e.touches[0].clientY, 0);
+    };
+
+    canvas.ontouchend = function(e){
+        clickUp(event.changedTouches[event.changedTouches.length-1].pageX, event.changedTouches[event.changedTouches.length-1].pageY, 0);
+    };
+
+    canvas.ontouchmove = function(e){
+        clickMove(e.touches[0].clientX, e.touches[0].clientY);
+    };
+}
+
+function clickDown(x,y,mode){
+    if(mode == 0){
+        clicks["leftdown"] = {x:x, y:y};
         clicks["leftheld"] = true;
 
         if(clicks["leftdown"].x < standardRadiusBalls){clicks["leftdown"].x = standardRadiusBalls;}
@@ -13,54 +44,56 @@ canvas.onmousedown = function(e){
         if(clicks["leftdown"].y > canvas.height - standardRadiusBalls){clicks["leftdown"].y = canvas.height - standardRadiusBalls;}
 
         for (var ball in balls) {
-            if (Math.hypot(balls[ball].x - clicks["leftdown"].x, balls[ball].y - clicks["leftdown"].y) < balls[ball].radius){
+            if (Math.hypot(balls[ball].x - x, balls[ball].y - y) < balls[ball].radius){
                 clicks["move"] = ball;
-                clicks["moved"] = {x:e.clientX, y:e.clientY};
-                balls[ball].x = clicks["leftdown"].x;
-                balls[ball].y = clicks["leftdown"].y;
+                clicks["moved"] = {x:".", y:"."};
+                balls[ball].x = x;
+                balls[ball].y = y;
                 balls[ball].dx = 0;
                 balls[ball].dy = 0;
                 clicks["leftdown"] = {x:".", y:"."};
             }
         }
     }
-    if(e.button == 2){
-        clicks["rightdown"] = {x:e.clientX, y:e.clientY};
+    if(mode == 2){
+        clicks["rightdown"] = {x:x, y:y};
         clicks["rightheld"] = true;
     }
-    if(e.button == 1){
+    if(mode == 1){
         standardRadiusBalls = 30;
 
-        clicks["scroll"] = {x:e.clientX, y:e.clientY};
+        clicks["scroll"] = {x:x, y:y};
         if(scrollTimer != 0){clearTimeout(scrollTimer);}
         scrollTimer = window.setTimeout("scrollStop()", 500);
     }
+}
 
-    drawobjects();
-};
-
-canvas.onmouseup = function(e){
-    if(e.button == 0){
-        clicks["leftup"] = {x:e.clientX, y:e.clientY};
+function clickUp(x,y,mode){
+    if(mode == 0){
+        clicks["leftup"] = {x:x, y:y};
         clicks["leftheld"] = false;
-        
-        balls[balls.length] = {
-            radius:standardRadiusBalls,
-            mass:standardRadiusBalls**3,
-            dx:-(clicks["leftdown"].x-clicks["leftup"].x)/30, 
-            dy:-(clicks["leftdown"].y-clicks["leftup"].y)/30,
-            x:clicks["leftdown"].x,
-            y:clicks["leftdown"].y,
-            color:eval(standardColorBalls),
-        };
+
+        if(clicks["move"] === false){
+            balls[balls.length] = {
+                radius:standardRadiusBalls,
+                mass:standardRadiusBalls**3,
+                dx:-(clicks["leftdown"].x-clicks["leftup"].x)/30, 
+                dy:-(clicks["leftdown"].y-clicks["leftup"].y)/30,
+                x:clicks["leftdown"].x,
+                y:clicks["leftdown"].y,
+                color:eval(standardColorBalls),
+            };
+        }
+        else{
+            clicks["move"] = false;
+            clearTimeout(moveTimer);
+        }
 
         clicks["leftdown"] = {x:".", y:"."};
         clicks["leftmove"] = {x:".", y:"."};
-        clicks["move"] = false;
-        clearTimeout(moveTimer);
     }
-    if(e.button == 2){
-        clicks["rightup"] = {x:e.clientX, y:e.clientY};
+    if(mode == 2){
+        clicks["rightup"] = {x:x, y:y};
         clicks["rightheld"] = false;
 
         walls[walls.length] = {
@@ -73,73 +106,39 @@ canvas.onmouseup = function(e){
         clicks["rightdown"] = {x:".", y:"."};
         clicks["rightmove"] = {x:".", y:"."};
     }
+}
 
-    drawobjects();
-};
-
-canvas.onmousemove = function(e){
+function clickMove(x,y){
     if(clicks["leftheld"]){
-        clicks["leftmove"] = {x:e.clientX, y:e.clientY};
-        drawobjects();
+        clicks["leftmove"] = {x:x, y:y};
     }
 
     if(clicks["rightheld"]){
-        clicks["rightmove"] = {x:e.clientX, y:e.clientY};
-        drawobjects();
+        clicks["rightmove"] = {x:x, y:y};
     }
 
     if(clicks["move"]){
         if(moveTimer != 0){clearTimeout(moveTimer);}
         moveTimer = window.setTimeout("moveStop("+clicks["move"]+")", 1);
-        balls[clicks["move"]].x = e.clientX;
-        balls[clicks["move"]].y = e.clientY;
-        balls[clicks["move"]].dx = e.clientX - clicks["moved"].x;
-        balls[clicks["move"]].dy = e.clientY - clicks["moved"].y;
+        balls[clicks["move"]].x = x;
+        balls[clicks["move"]].y = y;
+        balls[clicks["move"]].dx = x - clicks["moved"].x;
+        balls[clicks["move"]].dy = y - clicks["moved"].y;
 
-        clicks["moved"] = {x:e.clientX, y:e.clientY};
-        drawobjects();
+        clicks["moved"] = {x:x, y:y};
     }
-};
+}
 
-canvas.onwheel = function(e){
-    clicks["scroll"] = {x:e.clientX, y:e.clientY};
+function scroll(x,y,dy){
+    clicks["scroll"] = {x:x, y:y};
     if(scrollTimer != 0){clearTimeout(scrollTimer);}
     scrollTimer = window.setTimeout("scrollStop()", 250);
 
-    if(e.deltaY < 0){
+    if(dy < 0){
         if(standardRadiusBalls < 99){standardRadiusBalls += 2;}
     }
-    if(e.deltaY > 0){
+    if(dy > 0){
         if(standardRadiusBalls > 11){standardRadiusBalls -= 2;}
-    }
-};
-
-function moveStop(ball){
-    balls[ball].dx = 0;
-    balls[ball].dy = 0;
-}
-
-function scrollStop(){
-    clicks["scroll"] = {x:".", y:"."};
-}
-
-var imageCount = 0;
-function previewFile(){
-    var file = document.querySelector("input[type=file]").files[0];
-    var reader = new FileReader();
-
-    if(file){
-        reader.readAsDataURL(file);
-    }
-
-    reader.onloadend = function () {
-        imageCount++;
-        document.getElementById("images").innerHTML += "<img src='" + reader.result + "' id='img" + imageCount + "' style='display:none;'/>";
-        standardColorBalls = "image()";
-        if(document.getElementById("colorCB").checked){
-            document.getElementById("colorCB").checked = !document.getElementById("colorCB").checked;
-            document.getElementById("imageCB").checked = !document.getElementById("imageCB").checked;
-        }
     }
 }
 

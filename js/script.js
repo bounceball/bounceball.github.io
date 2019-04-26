@@ -67,7 +67,7 @@ function applyCollision() {
             for (var ball2 in balls) {
                 if(ball1 < ball2){
                     if(Math.hypot(balls[ball2].x - balls[ball1].x, balls[ball2].y - balls[ball1].y) <= balls[ball1].radius + balls[ball2].radius){
-                        if(Math.hypot((balls[ball2].x - balls[ball2].dx) - (balls[ball1].x - balls[ball1].dx), (balls[ball2].y - balls[ball2].dy) - (balls[ball1].y - balls[ball1].dy)) > balls[ball1].radius + balls[ball2].radius){
+                        if((Math.hypot((balls[ball2].x - balls[ball2].dx) - (balls[ball1].x - balls[ball1].dx), (balls[ball2].y - balls[ball2].dy) - (balls[ball1].y - balls[ball1].dy)) > balls[ball1].radius + balls[ball2].radius) && (clicks["move"] !== ball1 && clicks["move"] !== ball2)){
                             for(var t = 0; t<1; t+=0.1){
                                 if(Math.hypot((balls[ball2].x - t*balls[ball2].dx) - (balls[ball1].x - t*balls[ball1].dx), (balls[ball2].y - t*balls[ball2].dy) - (balls[ball1].y - t*balls[ball1].dy))>balls[ball1].radius + balls[ball2].radius){
                                     balls[ball1].x -= balls[ball1].dx*t;
@@ -177,16 +177,6 @@ function drawobjects() {
             ctx.lineWidth = 1;
             ctx.strokeStyle = balls[ball].color;
             ctx.stroke();
-
-            if(trail == false || trailLength){
-                ctx.fillStyle = balls[ball].color; 
-                ctx.beginPath();
-                ctx.moveTo(balls[ball].x,balls[ball].y);
-                ctx.lineTo(balls[ball].x+balls[ball].dx,balls[ball].y+balls[ball].dy);
-                ctx.lineWidth = 3;
-                ctx.strokeStyle = balls[ball].color;
-                ctx.stroke();
-            }
         }
         else{
             ctx.beginPath();
@@ -269,10 +259,5 @@ function drawobjects() {
         ctx.stroke();
     }
 }
-
-var redMin = 0; var greenMin = 0; var blueMin = 0;
-var redMax = 250; var greenMax = 250; var blueMax = 250;
-function randomColor(){return "rgb(" + Math.floor(Math.random()*(redMax-redMin+1)+redMin) + ", " + Math.floor(Math.random()*(greenMax-greenMin+1)+greenMin) + ", " + Math.floor(Math.random()*(blueMax-blueMin+1)+blueMin) + ")";}
-function image(){return "img" + imageCount;}
 
 draw();

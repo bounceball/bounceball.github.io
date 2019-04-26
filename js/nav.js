@@ -9,7 +9,7 @@ function nav(content){
 function openNav(content){
 	document.getElementById("nav").style.height = "290px";
 	document.getElementById("nav").style.width = "200px";
-	//document.getElementById("infoIcon").style.display = "block";
+	document.getElementById("infoIcon").style.display = "block";
 
 	if(content == "settings"){
 		document.getElementById("settings").style.display = "block";
@@ -56,10 +56,10 @@ function reset(){
 
 function toggle(variable){
 	if(variable == "color"){
-		if(document.getElementById("imageCB").checked){
+		if(standardColorBalls == "image()"){
 			standardColorBalls = "randomColor()";
-			document.getElementById("colorCB").checked = !document.getElementById("colorCB").checked;
-			document.getElementById("imageCB").checked = !document.getElementById("imageCB").checked;
+			document.getElementById("colorCB").checked = true;
+			document.getElementById("imageCB").checked = false;
 		}
 		else{
 			document.getElementById("upload").click();
