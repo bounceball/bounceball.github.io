@@ -13,6 +13,7 @@ var gravity = false;
 var collisionBalls = true;
 var collisionWalls = true;
 var collisionEdges = true;
+var wrapEdges = false;
 var paused = false;
 var trail = false;
 var standardRadiusBalls = 30;
@@ -67,38 +68,55 @@ function applyCollision() {
             for (var ball2 in balls) {
                 if(ball1 < ball2){
                     if(Math.hypot(balls[ball2].x - balls[ball1].x, balls[ball2].y - balls[ball1].y) <= balls[ball1].radius + balls[ball2].radius){
-                        if((Math.hypot((balls[ball2].x - balls[ball2].dx) - (balls[ball1].x - balls[ball1].dx), (balls[ball2].y - balls[ball2].dy) - (balls[ball1].y - balls[ball1].dy)) > balls[ball1].radius + balls[ball2].radius) && (clicks["move"] !== ball1 && clicks["move"] !== ball2)){
-                            for(var t = 0; t<1; t+=0.1){
-                                if(Math.hypot((balls[ball2].x - t*balls[ball2].dx) - (balls[ball1].x - t*balls[ball1].dx), (balls[ball2].y - t*balls[ball2].dy) - (balls[ball1].y - t*balls[ball1].dy))>balls[ball1].radius + balls[ball2].radius){
-                                    balls[ball1].x -= balls[ball1].dx*t;
-                                    balls[ball1].y -= balls[ball1].dy*t;
-                                    balls[ball2].x -= balls[ball2].dx*t;
-                                    balls[ball2].y -= balls[ball2].dy*t;
-                                    t=1;
+                        if(clicks["move"] !== ball1 && clicks["move"] !== ball2){
+                            if((Math.hypot(balls[ball2].x - balls[ball2].dx) - (balls[ball1].x - balls[ball1].dx), (balls[ball2].y - balls[ball2].dy) - (balls[ball1].y - balls[ball1].dy)) > balls[ball1].radius + balls[ball2].radius){
+                                for(var t = 0; t<1; t+=0.1){
+                                    if(Math.hypot((balls[ball2].x - t*balls[ball2].dx) - (balls[ball1].x - t*balls[ball1].dx), (balls[ball2].y - t*balls[ball2].dy) - (balls[ball1].y - t*balls[ball1].dy))>balls[ball1].radius + balls[ball2].radius){
+                                        balls[ball1].x -= balls[ball1].dx*t;
+                                        balls[ball1].y -= balls[ball1].dy*t;
+                                        balls[ball2].x -= balls[ball2].dx*t;
+                                        balls[ball2].y -= balls[ball2].dy*t;
+                                        t=1;
+                                    }
                                 }
                             }
+                            else{
+                                var theta = Math.atan2(balls[ball2].y - balls[ball1].y, balls[ball2].x - balls[ball1].x);
+                                var overlap = balls[ball1].radius + balls[ball2].radius - Math.hypot(balls[ball1].x - balls[ball2].x, balls[ball1].y - balls[ball2].y);
+                                balls[ball1].x -= overlap * Math.cos(theta)/((balls[ball1].mass/balls[ball2].mass) + 1);
+                                balls[ball1].y -= overlap * Math.sin(theta)/((balls[ball1].mass/balls[ball2].mass) + 1);
+                                balls[ball2].x += overlap * Math.cos(theta)/((balls[ball2].mass/balls[ball1].mass) + 1);
+                                balls[ball2].y += overlap * Math.sin(theta)/((balls[ball2].mass/balls[ball1].mass) + 1);
+                            }
+
+                            var theta1 = Math.atan2(balls[ball1].dy, balls[ball1].dx);
+                            var theta2 = Math.atan2(balls[ball2].dy, balls[ball2].dx);
+                            var phi = Math.atan2(balls[ball2].y - balls[ball1].y, balls[ball2].x - balls[ball1].x);
+                            var m1 = balls[ball1].mass;
+                            var m2 = balls[ball2].mass;
+                            var v1 = Math.sqrt(balls[ball1].dx**2 + balls[ball1].dy**2);
+                            var v2 = Math.sqrt(balls[ball2].dx**2 + balls[ball2].dy**2);
+
+                            balls[ball1].dx = (v1 * Math.cos(theta1 - phi) * (m1-m2) + 2*m2*v2*Math.cos(theta2 - phi)) / (m1+m2) * Math.cos(phi) + v1*Math.sin(theta1-phi) * Math.cos(phi+Math.PI/2);
+                            balls[ball1].dy = (v1 * Math.cos(theta1 - phi) * (m1-m2) + 2*m2*v2*Math.cos(theta2 - phi)) / (m1+m2) * Math.sin(phi) + v1*Math.sin(theta1-phi) * Math.sin(phi+Math.PI/2);
+                            balls[ball2].dx = (v2 * Math.cos(theta2 - phi) * (m2-m1) + 2*m1*v1*Math.cos(theta1 - phi)) / (m1+m2) * Math.cos(phi) + v2*Math.sin(theta2-phi) * Math.cos(phi+Math.PI/2);
+                            balls[ball2].dy = (v2 * Math.cos(theta2 - phi) * (m2-m1) + 2*m1*v1*Math.cos(theta1 - phi)) / (m1+m2) * Math.sin(phi) + v2*Math.sin(theta2-phi) * Math.sin(phi+Math.PI/2);
                         }
                         else{
-                            var overlap = balls[ball1].radius + balls[ball2].radius - Math.hypot(balls[ball1].x - balls[ball2].x,balls[ball1].y - balls[ball2].y);
-                            var phi = Math.atan2(balls[ball2].y - balls[ball1].y, balls[ball2].x - balls[ball1].x);
-                            balls[ball1].x -= overlap * Math.cos(phi)/((balls[ball1].mass/balls[ball2].mass) + 1);
-                            balls[ball1].y -= overlap * Math.sin(phi)/((balls[ball1].mass/balls[ball2].mass) + 1);
-                            balls[ball2].x += overlap * Math.cos(phi)/((balls[ball2].mass/balls[ball1].mass) + 1);
-                            balls[ball2].y += overlap * Math.sin(phi)/((balls[ball2].mass/balls[ball1].mass) + 1);
+                            var ball = (clicks["move"] == ball2) ? ball1 : ball2;
+
+                            var theta = Math.atan2(balls[clicks["move"]].y - balls[ball].y, balls[clicks["move"]].x - balls[ball].x);
+                            var overlap = balls[ball].radius + balls[clicks["move"]].radius - Math.hypot(balls[ball].x - balls[clicks["move"]].x, balls[ball].y - balls[clicks["move"]].y);
+                            balls[ball].x -= overlap * Math.cos(theta);
+                            balls[ball].y -= overlap * Math.sin(theta);
+
+                            var theta1 = Math.atan2(balls[ball].dy, balls[ball].dx);
+                            var phi = Math.atan2(balls[clicks["move"]].y - balls[ball].y, balls[clicks["move"]].x - balls[ball].x);
+                            var v1 = Math.sqrt(balls[ball].dx**2 + balls[ball].dy**2);
+
+                            balls[ball].dx = (-v1 * Math.cos(theta1 - phi)) * Math.cos(phi) + v1*Math.sin(theta-phi) * Math.cos(phi+Math.PI/2);
+                            balls[ball].dy = (-v1 * Math.cos(theta1 - phi)) * Math.sin(phi) + v1*Math.sin(theta-phi) * Math.sin(phi+Math.PI/2);
                         }
-
-                        var theta1 = Math.atan2(balls[ball1].dy, balls[ball1].dx);
-                        var theta2 = Math.atan2(balls[ball2].dy, balls[ball2].dx);
-                        phi = Math.atan2(balls[ball2].y - balls[ball1].y, balls[ball2].x - balls[ball1].x);
-                        var m1 = balls[ball1].mass;
-                        var m2 = balls[ball2].mass;
-                        var v1 = Math.sqrt(balls[ball1].dx**2 + balls[ball1].dy**2);
-                        var v2 = Math.sqrt(balls[ball2].dx**2 + balls[ball2].dy**2);
-
-                        balls[ball1].dx = (v1 * Math.cos(theta1 - phi) * (m1-m2) + 2*m2*v2*Math.cos(theta2 - phi)) / (m1+m2) * Math.cos(phi) + v1*Math.sin(theta1-phi) * Math.cos(phi+Math.PI/2);
-                        balls[ball1].dy = (v1 * Math.cos(theta1 - phi) * (m1-m2) + 2*m2*v2*Math.cos(theta2 - phi)) / (m1+m2) * Math.sin(phi) + v1*Math.sin(theta1-phi) * Math.sin(phi+Math.PI/2);
-                        balls[ball2].dx = (v2 * Math.cos(theta2 - phi) * (m2-m1) + 2*m1*v1*Math.cos(theta1 - phi)) / (m1+m2) * Math.cos(phi) + v2*Math.sin(theta2-phi) * Math.cos(phi+Math.PI/2);
-                        balls[ball2].dy = (v2 * Math.cos(theta2 - phi) * (m2-m1) + 2*m1*v1*Math.cos(theta1 - phi)) / (m1+m2) * Math.sin(phi) + v2*Math.sin(theta2-phi) * Math.sin(phi+Math.PI/2);
                     }
                 }
             }
@@ -161,6 +179,22 @@ function applyCollision() {
             if(balls[ball].x > canvas.width - balls[ball].radius){balls[ball].x = canvas.width - balls[ball].radius; balls[ball].dx *= -1;}
             if(balls[ball].y < balls[ball].radius){balls[ball].y = balls[ball].radius; balls[ball].dy *= -1;}
             if(balls[ball].y > canvas.height - balls[ball].radius){balls[ball].y = canvas.height - balls[ball].radius; balls[ball].dy *= -1;}
+        }
+    }
+    else if(wrapEdges){
+        for(var ball in balls){
+            if(balls[ball].x < -balls[ball].radius){balls[ball].x = canvas.width+balls[ball].radius;}
+            if(balls[ball].x > canvas.width+balls[ball].radius){balls[ball].x = -balls[ball].radius;}
+            if(balls[ball].y < -balls[ball].radius){balls[ball].y = canvas.height+balls[ball].radius;}
+            if(balls[ball].y > canvas.height+balls[ball].radius){balls[ball].y = -balls[ball].radius;}
+        }
+    }
+    else{
+        for(var ball in balls){
+            if(balls[ball].x < -balls[ball].radius){balls.splice(ball,1); if(clicks["move"]>=ball&&clicks["move"]){clicks["move"]-=1;}; ball-=1; continue;}
+            if(balls[ball].x > canvas.width+balls[ball].radius){balls.splice(ball,1); if(clicks["move"]>=ball&&clicks["move"]){clicks["move"]-=1;}; ball-=1; continue;}
+            if(balls[ball].y < -balls[ball].radius){balls.splice(ball,1); if(clicks["move"]>=ball&&clicks["move"]){clicks["move"]-=1;}; ball-=1; continue;}
+            if(balls[ball].y > canvas.height+balls[ball].radius){balls.splice(ball,1); if(clicks["move"]>=ball&&clicks["move"]){clicks["move"]-=1;}; ball-=1; continue;}
         }
     }
 }    

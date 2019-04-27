@@ -52,6 +52,7 @@ function reset(){
 	if(!document.getElementById("collisionBallsCB").checked){toggle("collisionBalls");}
 	if(!document.getElementById("collisionWallsCB").checked){toggle("collisionWalls");}
 	if(!document.getElementById("collisionEdgesCB").checked){toggle("collisionEdges");}
+	if(document.getElementById("wrapEdgesCB").checked){toggle("wrapEdges");}
 	if(document.getElementById("trailCB").checked){toggle("trail");}
 	if(document.getElementById("pausedCB").checked){toggle("paused");}
 	if(document.getElementById("imageCB").checked){toggle("color", "#");}

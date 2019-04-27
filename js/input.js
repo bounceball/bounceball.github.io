@@ -65,7 +65,7 @@ function clickDown(x,y,mode){
         for (var ball in balls) {
             if (Math.hypot(balls[ball].x - x, balls[ball].y - y) < balls[ball].radius){
                 clicks["move"] = ball;
-                clicks["moved"] = {x:".", y:"."};
+                clicks["moved"] = {x:x, y:y};
                 balls[ball].x = x;
                 balls[ball].y = y;
                 balls[ball].dx = 0;
@@ -138,7 +138,7 @@ function clickMove(x,y){
 
     if(clicks["move"]){
         if(moveTimer != 0){clearTimeout(moveTimer);}
-        moveTimer = window.setTimeout("moveStop("+clicks["move"]+")", 1);
+        moveTimer = window.setTimeout("moveStop("+clicks["move"]+")", 10);
         balls[clicks["move"]].x = x;
         balls[clicks["move"]].y = y;
         balls[clicks["move"]].dx = x - clicks["moved"].x;
