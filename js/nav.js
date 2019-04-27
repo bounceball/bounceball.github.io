@@ -8,13 +8,15 @@ function nav(content){
 }
 function openNav(content){
 	document.getElementById("nav").style.height = "300px";
+	if(mobile()){document.getElementById("nav").style.height = "320px";}
 	document.getElementById("nav").style.width = "200px";
 
 	if(mobile() == false){
 		document.getElementById("infoIcon").style.display = "block";
 	}
 	else{
-		document.getElementById("ballIcon").style.display = "block";
+		if(mobileClickMode == 0){document.getElementById("ballIcon").style.display = "block";}
+		else{document.getElementById("wallIcon").style.display = "block";}
 		document.getElementById("undoIcon").style.display = "block";
 		document.getElementById("slider").style.display = "block";
 	}
