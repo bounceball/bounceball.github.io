@@ -7,7 +7,7 @@ function nav(content){
 	}
 }
 function openNav(content){
-	document.getElementById("nav").style.height = "290px";
+	document.getElementById("nav").style.height = "300px";
 	document.getElementById("nav").style.width = "200px";
 
 	if(mobile() == false){

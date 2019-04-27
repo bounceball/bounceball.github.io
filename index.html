@@ -16,69 +16,67 @@
             <img src="icons/Settings.png" id="settingsIcon" class="icon" onclick="nav('settings')"/>
 
             <div id="settings">
-                <div class="checkBox">
+                <label class="container" for="gravityCB">Gravity: <div class="input"><input type="number" id="gravityScale" value="100" onblur="change('gravityScale', '%')"><div class="inputTxt">%</div></div>
                     <input type="checkbox" id="gravityCB" onchange="toggle('gravity')"/>
-                    <label for="gravityCB" id="gravityCBLabel"></label>
-                    <a onclick="toggle('gravity')">Gravity:</a> <input type="number" id="gravityScale" value="100" onblur="change('gravityScale', '%')"> %
-                </div>
-
-                <div class="checkBox">
+                    <span class="checkmark"></span>
+                </label>
+                <br>
+                <label class="container" for="frictionCB">Friction: <div class="input"><input type="number" id="frictionScale" value="100" onblur="change('frictionScale', '%')"><div class="inputTxt">%</div></div>
                     <input type="checkbox" id="frictionCB" onchange="toggle('friction')" checked/>
-                    <label for="frictionCB" id="frictionCBLabel"></label>
-                    <a onclick="toggle('friction')">Friction:</a> <input type="number" id="frictionScale" value="100" onblur="change('frictioScale', '%')"> %
-                </div>
-
-                <div class="checkBox">
+                    <span class="checkmark"></span>
+                </label>
+                <br>
+                <label class="container" for="trailCB">Trail: <div class="input"><input type="number" id="trailLength" value="" onblur="change('trailLength', '%')"><div class="inputTxt">frames</div></div>
                     <input type="checkbox" id="trailCB" onchange="toggle('trail')"/>
-                    <label for="trailCB" id="trailCBLabel"></label>
-                    <a onclick="toggle('trail')">Trail:</a> <input type="number" id="trailLength" value="" onblur="change('trailLength', '#')"> frames
-                </div>
-
-                <div class="checkBox">
+                    <span class="checkmark"></span>
+                </label>
+                <br>
+                <label class="container">Paused
                     <input type="checkbox" id="pausedCB" onchange="toggle('paused')"/>
-                    <label for="pausedCB" id="pausedCBLabel"></label>
-                    <a onclick="toggle('paused')">Paused</a>
-                </div>
+                    <span class="checkmark"></span>
+                </label>
+                <br>
+                Collision with:<br>
 
-                &nbsp;Collision with:<br>
-
-                <div class="checkBox">
+                <label class="container" id="collisionBalls">Balls
                     <input type="checkbox" id="collisionBallsCB" onchange="toggle('collisionBalls')" checked/>
-                    <label for="collisionBallsCB" id="collisionBallsCBLabel"></label>
-                    <a onclick="toggle('collisionBalls')">Balls</a>
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container" id="collisionWalls">Walls
                     <input type="checkbox" id="collisionWallsCB" onchange="toggle('collisionWalls')" checked/>
-                    <label for="collisionWallsCB" id="collisionWallsCBLabel"></label>
-                    <a onclick="toggle('collisionWalls')">Walls</a>
+                    <span class="checkmark"></span>
+                </label><br>
+                <label class="container" id="collisionEdges">Edges
                     <input type="checkbox" id="collisionEdgesCB" onchange="toggle('collisionEdges')" checked/>
-                    <label for="collisionEdgesCB" id="collisionEdgesCBLabel"></label>
-                    <a onclick="toggle('collisionEdges')">Edges</a>
-                </div>
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container" id="wrapEdges">Wrap
+                    <input type="checkbox" id="wrapEdgesCB" onchange="toggle('wrapEdges')"/>
+                    <span class="checkmark"></span>
+                </label>
+                <br>
+                <label class="inputNoLabel">Speed: <div class="input"><input type="number" id="speed" value="100" onblur="change('speed', '%')"><div class="inputTxt">%</div></div></label><br>
 
-                &nbsp;Speed: <input type="number" id="speed" value="100" onblur="change('speed', '%')"> %<br>
+                Color:<br>
 
-                &nbsp;Color:
-
-                <div class="checkBox">
+                <label class="container">Random RGB color:
                     <input type="checkbox" id="colorCB" onchange="toggle('color')" checked/>
-                    <label for="colorCB" id="colorCBLabel"></label>
-                    <a onclick="toggle('color')">Random RGB color:</a><br>
-                    &nbsp;Red: <input type="number" id="redMin" value="0" onblur="change('redMin', '#')"> - <input type="number" id="redMax" value="250" onblur="change('redMax', '#')"><br>
-                    &nbsp;Green: <input type="number" id="greenMin" value="0" onblur="change('greenMin', '#')"> - <input type="number" id="greenMax" value="250" onblur="change('greenMax', '#')"><br>
-                    &nbsp;Blue: <input type="number" id="blueMin" value="0" onblur="change('blueMin', '#')"> - <input type="number" id="blueMax" value="250" onblur="change('blueMax', '#')">
-                </div>
+                    <span class="checkmark"></span>
+                </label>
+                <label class="inputNoLabel">Red: <div class="inputMin"><input type="number" id="redMin" value="0" onblur="change('redMin', '#')"><div class="inputTxt">-</div></div><div class="inputMax"><input type="number" id="redMax" value="250" onblur="change('redMax', '#')"><div class="inputTxt"></div></div></label><br>
+                <label class="inputNoLabel">Green: <div class="inputMin"><input type="number" id="greenMin" value="0" onblur="change('greenMin', '#')"><div class="inputTxt">-</div></div><div class="inputMax"><input type="number" id="greenMax" value="250" onblur="change('greenMax', '#')"><div class="inputTxt"></div></div></label><br>
+                <label class="inputNoLabel">Blue: <div class="inputMin"><input type="number" id="blueMin" value="0" onblur="change('blueMin', '#')"><div class="inputTxt">-</div></div><div class="inputMax"><input type="number" id="blueMax" value="250" onblur="change('blueMax', '#')"><div class="inputTxt"></div></div></label><br>
 
-                <div class="checkBox">
+                <label class="container">Image: <a onclick="document.getElementById('upload').click();" id="uploadTxt">Upload image</a>
                     <input type="checkbox" id="imageCB" onchange="toggle('color')"/>
-                    <label for="imageCB" id="imageCBLabel"></label>
-                    <a onclick="toggle('color')">Image:</a>
-                    &nbsp;<a onclick="document.getElementById('upload').click();" id="uploadTxt">Upload image</a>
-                    <input type="file" accept="image/*" onchange="previewFile()" id="upload">
-                </div>
+                    <span class="checkmark"></span>
+                </label>
+                <input type="file" accept="image/*" onchange="previewFile()" id="upload">
             </div>
 
             <div id="info">
                 Leftclick: Spawn balls<br>
-                Rightclick: Draw walls<br>
+                Rightclick: Draw walls<br><br>
                 Scroll: Adjust ball radius<br><br>
                 Arrow keys while paused:<br>Next/Previous frame<br><br>
                 R: Reset<br><br>

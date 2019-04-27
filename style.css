@@ -39,6 +39,7 @@ body{
     position: absolute;
     display: none;
     top: 35px;
+    left: 5px;
 }
 #info{
     position: absolute;
@@ -143,23 +144,72 @@ input[type=number]{
     height: 14px;
 }
 
+.input{
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-left: 75px;
+}
+.inputNoLabel{
+    position: relative;
+}
+.inputMin{
+    position: absolute;
+    top: -1px;
+    left: 75px;
+}
+.inputMax{
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-left: 115px;
+}
+.inputTxt{
+    margin-top: -17px;
+    margin-left: 30px;
+}
+
+#collisionEdgesCB{
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-left: 75px;
+}
+
+#collisionWalls{
+    position: absolute;
+    left: 0;
+    margin-left: 75px;
+}
+
+#wrapEdges{
+    position: absolute;
+    left: 0;
+    margin-left: 75px;
+}
+
+
+
 input[type='checkbox']{
     visibility: hidden;
 }
 
-.checkBox label{
+.container{
+    position: relative;
+    padding-left: 20px;
+}
+.checkmark{
     position: absolute;
-    cursor: pointer;
-    width: 10px;
+    top: 2px;
+    left: 0;
     height: 10px;
-    top: 3px;
-    left: 5px;
+    width: 10px;
     background: white;
     border: 1px solid black;
 }
-.checkBox label:after{
-    opacity: 0;
-    content: '';
+.container .checkmark:after{
+    content: "";
+    display: none;
     position: absolute;
     width: 5px;
     height: 2px;
@@ -171,24 +221,10 @@ input[type='checkbox']{
     border-right: none;
     transform: rotate(-45deg);
 }
-.checkBox label:hover::after{
-    opacity: 0;
-}
-.checkBox input[type=checkbox]:checked + label:after{
-    opacity: 1;
+.container input:checked ~ .checkmark:after{
+    display: block;
 }
 
-#frictionCBLabel{top: 24px;}
-#trailCBLabel{top: 44px;}
-#pausedCBLabel{top: 64px;}
-#collisionBallsCBLabel{top: 102px;}
-#collisionWallsCBLabel{top: 102px; left:65px;}
-#collisionEdgesCBLabel{top: 102px; left:130px;}
-#colorCBLabel{top:158px;}
-#imageCBLabel{top:235px;}
-#gravityScale{margin-left: 2px;}
-#trailLength{margin-left: 20.5px;}
-#speed{margin-left: 25.75px;}
-#redMin{margin-left: 41.5px;}
-#greenMin{margin-left: 27.25px;}
-#blueMin{margin-left: 39px;}
+#wrapEdges{
+    display: none;
+}

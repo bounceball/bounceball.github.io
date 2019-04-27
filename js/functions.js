@@ -18,6 +18,7 @@ function previewFile(){
 
 function toggle(variable){
     if(variable == "color"){
+        document.getElementById("colorCB").checked = !document.getElementById("colorCB").checked;
         if(standardColorBalls == "image()"){
             standardColorBalls = "randomColor()";
             document.getElementById("colorCB").checked = true;
@@ -41,6 +42,15 @@ function toggle(variable){
         else{
             document.getElementById("left").style.display = "none";
             document.getElementById("right").style.display = "none";
+        }
+    }
+
+    if(variable == "collisionEdges"){
+        if(!collisionEdges){
+            document.getElementById("wrapEdges").style.display = "initial";
+        }
+        else{
+            document.getElementById("wrapEdges").style.display = "none";
         }
     }
 
