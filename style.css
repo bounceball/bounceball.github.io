@@ -148,7 +148,7 @@ input[type=number]{
     position: absolute;
     top: 0;
     left: 0;
-    margin-left: 75px;
+    margin-left: 80px;
 }
 .inputNoLabel{
     position: relative;
@@ -156,13 +156,13 @@ input[type=number]{
 .inputMin{
     position: absolute;
     top: -1px;
-    left: 75px;
+    left: 80px;
 }
 .inputMax{
     position: absolute;
     top: 0;
     left: 0;
-    margin-left: 115px;
+    margin-left: 120px;
 }
 .inputTxt{
     margin-top: -17px;
@@ -173,19 +173,22 @@ input[type=number]{
     position: absolute;
     top: 0;
     left: 0;
-    margin-left: 75px;
+    margin-left: 80px;
 }
 
 #collisionWalls{
     position: absolute;
+    margin-top: 2px;
     left: 0;
-    margin-left: 75px;
+    margin-left: 80px;
 }
-
 #wrapEdges{
     position: absolute;
     left: 0;
-    margin-left: 75px;
+    margin-left: 80px;
+}
+.CBRihgtTxt{
+    margin-top: -1px;
 }
 
 

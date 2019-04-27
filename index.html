@@ -16,33 +16,33 @@
             <img src="icons/Settings.png" id="settingsIcon" class="icon" onclick="nav('settings')"/>
 
             <div id="settings">
-                <label class="container" for="gravityCB">Gravity: <div class="input"><input type="number" id="gravityScale" value="100" onblur="change('gravityScale', '%')"><div class="inputTxt">%</div></div>
+                <label class="container" for="gravityCB"><b>G</b>ravity: <div class="input"><input type="number" id="gravityScale" value="100" onblur="change('gravityScale', '%')"><div class="inputTxt">%</div></div>
                     <input type="checkbox" id="gravityCB" onchange="toggle('gravity')"/>
                     <span class="checkmark"></span>
                 </label>
                 <br>
-                <label class="container" for="frictionCB">Friction: <div class="input"><input type="number" id="frictionScale" value="100" onblur="change('frictionScale', '%')"><div class="inputTxt">%</div></div>
+                <label class="container" for="frictionCB"><b>F</b>riction: <div class="input"><input type="number" id="frictionScale" value="100" onblur="change('frictionScale', '%')"><div class="inputTxt">%</div></div>
                     <input type="checkbox" id="frictionCB" onchange="toggle('friction')" checked/>
                     <span class="checkmark"></span>
                 </label>
                 <br>
-                <label class="container" for="trailCB">Trail: <div class="input"><input type="number" id="trailLength" value="" onblur="change('trailLength', '%')"><div class="inputTxt">frames</div></div>
+                <label class="container" for="trailCB"><b>T</b>rail: <div class="input"><input type="number" id="trailLength" value="" onblur="change('trailLength', '%')"><div class="inputTxt">frames</div></div>
                     <input type="checkbox" id="trailCB" onchange="toggle('trail')"/>
                     <span class="checkmark"></span>
                 </label>
                 <br>
-                <label class="container">Paused
+                <label class="container"><b>P</b>aused
                     <input type="checkbox" id="pausedCB" onchange="toggle('paused')"/>
                     <span class="checkmark"></span>
                 </label>
                 <br>
-                Collision with:<br>
+                <b>C</b>ollision with:<br>
 
                 <label class="container" id="collisionBalls">Balls
                     <input type="checkbox" id="collisionBallsCB" onchange="toggle('collisionBalls')" checked/>
                     <span class="checkmark"></span>
                 </label>
-                <label class="container" id="collisionWalls">Walls
+                <label class="container" id="collisionWalls"><div class="CBRightTxt">Walls</div>
                     <input type="checkbox" id="collisionWallsCB" onchange="toggle('collisionWalls')" checked/>
                     <span class="checkmark"></span>
                 </label><br>
@@ -50,7 +50,7 @@
                     <input type="checkbox" id="collisionEdgesCB" onchange="toggle('collisionEdges')" checked/>
                     <span class="checkmark"></span>
                 </label>
-                <label class="container" id="wrapEdges">Wrap
+                <label class="container" id="wrapEdges"><div class="CBRightTxt">Wrap</div>
                     <input type="checkbox" id="wrapEdgesCB" onchange="toggle('wrapEdges')"/>
                     <span class="checkmark"></span>
                 </label>
@@ -76,13 +76,14 @@
 
             <div id="info">
                 Leftclick: Spawn balls<br>
-                Rightclick: Draw walls<br><br>
+                Rightclick: Draw walls<br>
                 Scroll: Adjust ball radius<br><br>
                 Arrow keys while paused:<br>Next/Previous frame<br><br>
-                R: Reset<br><br>
-                N: Spawn a new ball<br><br>
-                H: Hide the overlay<br><br>
-                Delete: Undo last ball/wall
+                R: Reset<br>
+                N: Spawn a new ball<br>
+                H: Hide the overlay<br>
+                Delete: Undo last ball/wall<br><br>
+                Any bold letter in the settings menu indicates a hotkey to toggle the checkbox
             </div>
 
             <img src="icons/Info.png" id="infoIcon" class="icon" onclick="nav('info')"/>
